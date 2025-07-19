@@ -49,3 +49,5 @@ def check_email():
         "reason": "SMTP check failed on all MX",
         "errors": error_log
     })
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080)
