@@ -12,6 +12,7 @@ def check_email():
         return jsonify({"status": "error", "reason": "Invalid email format"}), 400
 
     domain = email.split('@')[1]
+    error_log = []
 
     try:
         mx_records = dns.resolver.resolve(domain, 'MX')
@@ -33,11 +34,18 @@ def check_email():
             elif code == 550:
                 return jsonify({"status": "invalid", "reason": msg.decode()})
             else:
-                return jsonify({"status": "unknown", "smtp_code": code, "smtp_response": msg.decode()})
+                return jsonify({
+                    "status": "unknown",
+                    "smtp_code": code,
+                    "smtp_response": msg.decode(),
+                    "mx": mx_host
+                })
         except Exception as e:
+            error_log.append({ "mx": mx_host, "error": str(e) })
             continue
 
-    return jsonify({"status": "error", "reason": "SMTP check failed on all MX"})
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+    return jsonify({
+        "status": "error",
+        "reason": "SMTP check failed on all MX",
+        "errors": error_log
+    })
