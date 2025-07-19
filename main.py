@@ -24,8 +24,8 @@ def check_email():
         try:
             server = smtplib.SMTP(timeout=10)
             server.connect(mx_host)
-            server.helo("example.com")
-            server.mail("test@example.com")
+            server.helo("consulenzadedicata.com")
+            server.mail("n.vellani@consulenzadedicata.com")
             code, msg = server.rcpt(email)
             server.quit()
 
